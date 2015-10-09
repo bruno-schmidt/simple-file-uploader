@@ -1,0 +1,14 @@
+{
+    "name": "brunoschmello/simple-file-uploader",
+    "description": "Uma pequena biblioteca para processar o upload de arquivos",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bruno Schmidt",
+            "email": "nomail@nomail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {}
+}
