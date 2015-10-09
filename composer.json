@@ -9,6 +9,9 @@
             "email": "nomail@nomail.com"
         }
     ],
+    "autoload": {
+      "psr-4": { "SimpleFileUploader\\": "src/" }
+    },
     "minimum-stability": "dev",
     "require": {}
 }
