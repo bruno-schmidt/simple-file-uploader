@@ -1,8 +1,8 @@
 <?php
 namespace SimpleFileUploader;
 
-use AppCore\Lib\Upload\Exception\UploadException;
-use AppCore\Lib\Upload\Exception\FileTypeNotAllowedException;
+use SimpleFileUploader\Exception\UploadException;
+use SimpleFileUploader\Exception\FileTypeNotAllowedException;
 
 class FileUploader {
 
@@ -19,7 +19,7 @@ class FileUploader {
   public function allowTypes()
   {
     $types = func_get_args();
-    $this->allowed_file_types = $this->allowed_file_types + $types;
+    $this->allowed_file_types = $types;
 
     return $this;
   }
@@ -57,14 +57,19 @@ class FileUploader {
     if(empty($this->allowed_file_types))
       return true;
 
-    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $finfo = new \finfo(FILEINFO_MIME_TYPE);
 
-    if(!in_array($this->allowed_file_types, $finfo->file($data['tmp_name'])))
+    if(!in_array($finfo->file($data['tmp_name']), $this->allowed_file_types))
       throw new FileTypeNotAllowedException();
 
     return true;
   }
 
+  private function _validateFormDataStructure($data)
+  {
+    if(!isset($data['error']) and !isset($data['tmp_name']))
+      throw new \Exception('Estrutura dos dados do arquivo inválido.');
+  }
   /**
    * Usado para informar o nome que o arquivo recebido terá após a conclusão do upload no diretório informado através de FileUploader::destination().
    * @param string $filename o nome final do arquivo.
@@ -82,6 +87,7 @@ class FileUploader {
    */
   public function upload($formData, $path = null)
   {
+    $this->_validateFormDataStructure($formData);
     if($formData['error'] == UPLOAD_ERR_OK) {
       $this->_validateDataType($formData);
 
@@ -91,14 +97,15 @@ class FileUploader {
       if (empty($this->filename))
         $this->setFilename(md5($formData['name'] . date('hisdmY')));
 
-      $fullpathUploadedFile = $this->destination . $this->filename;
+      $fullpathUploadedFile = $this->destination . $this->filename . '.' . pathinfo($formData['name'], PATHINFO_EXTENSION);
 
-      if (move_uploaded_file($this->form_data['tmp_name'], $fullpathUploadedFile))
+      if (move_uploaded_file($formData['tmp_name'], $fullpathUploadedFile))
         return $fullpathUploadedFile;
       else
         throw new UploadException($formData['error']);
     }
   }
+
 }
 
 ?>
