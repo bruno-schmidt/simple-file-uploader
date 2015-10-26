@@ -95,7 +95,7 @@ class FileUploader {
       $this->_validateDataType($formData);
 
       if (empty($path))
-        $path = $this->setDestination();
+        $path = $this->getDestination();
 
       if (!empty($this->filename))
         $filename = $this->getFilename();
