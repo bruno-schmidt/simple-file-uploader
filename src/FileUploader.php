@@ -36,7 +36,7 @@ class FileUploader {
       $destination .= '/';
 
     if(!is_dir($destination))
-      throw new InvalidArgumentException('Diretório $destination não encontrado.');
+      throw new \InvalidArgumentException('Diretório $destination não encontrado.');
 
     $this->destination = $destination;
   }
